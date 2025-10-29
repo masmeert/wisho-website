@@ -1,37 +1,51 @@
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-
-async function fetchSearchResults(query: string) {
-	await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate network delay
-	return { results: [`Result 1 for ${query}`, `Result 2 for ${query}`] };
-}
-
-function searchQueryOptions(query: string) {
-	return queryOptions({
-		queryKey: ["search", query],
-		queryFn: async () => fetchSearchResults(query),
-	});
-}
+import { useSearchResultsOptions } from "./-hooks/use-search-results";
 
 export const Route = createFileRoute("/search/$query")({
 	component: SearchResults,
 	loader: async ({ params, context: { queryClient } }) =>
-		queryClient.ensureQueryData(searchQueryOptions(params.query)),
+		queryClient.ensureQueryData(useSearchResultsOptions(params.query)),
 });
 
 function SearchResults() {
 	const { query } = Route.useParams();
-	const { data } = useSuspenseQuery(searchQueryOptions(query));
+	const { data } = useSuspenseQuery(useSearchResultsOptions(query));
 
+	if (data.length > 0) {
+		return (
+			<div>
+				<h1>Search Results</h1>
+				<ul>
+					{data.map((entry) => (
+						<li key={entry.id}>
+							<span>
+								<span>
+									{entry.kanji_forms.map((form) => form.text).join(", ")}
+								</span>
+								{" / "}
+								<span>
+									{entry.readings.map((reading) => reading.text).join(", ")}
+								</span>
+							</span>
+							{" => "}
+							<span>
+								{entry.senses.map((sense, index) => (
+									<span key={index}>
+										{sense.glosses.map((gloss) => gloss.text).join("; ")}
+									</span>
+								))}
+							</span>
+						</li>
+					))}
+				</ul>
+			</div>
+		);
+	}
 	return (
 		<div>
-			<h1>Search Results</h1>
+			<h1>No results</h1>
 			<p>Query: {query}</p>
-			<ul>
-				{data.results.map((result) => (
-					<li key={result}>{result}</li>
-				))}
-			</ul>
 		</div>
 	);
 }
