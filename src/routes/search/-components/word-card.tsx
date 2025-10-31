@@ -22,16 +22,16 @@ export default function SearchResultCard({ result }: SearchResultCardProps) {
 		<Card className="p-4 md:p-6 hover:shadow-lg transition-shadow border-border/40">
 			<div className="flex gap-4 md:gap-6">
 				<div className="flex-shrink-0 flex flex-col items-center justify-center min-w-20 md:min-w-24">
-					{kanji && (
-						<div className="text-3xl md:text-4xl font-bold text-foreground mb-1 text-center break-words">
-							{kanji}
-						</div>
-					)}
 					{reading && (
 						<div
 							className={`text-sm md:text-base text-center ${!kanji ? "text-2xl md:text-3xl font-bold text-foreground" : "text-muted-foreground"}`}
 						>
 							{reading}
+						</div>
+					)}
+					{kanji && (
+						<div className="text-3xl md:text-4xl font-bold text-foreground mb-1 text-center break-words">
+							{kanji}
 						</div>
 					)}
 				</div>
