@@ -1,11 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
 import { Api } from "@/lib/axios";
-import type { GetEntryOutput } from "@/types/api";
+import type { GetSearchResults } from "@/types/api";
 
 export async function getSearchResults(
 	query: string,
-): Promise<GetEntryOutput[]> {
-	const res = await Api.get<GetEntryOutput[]>("/search", {
+): Promise<GetSearchResults[]> {
+	const res = await Api.get<GetSearchResults[]>("/search", {
 		params: {
 			q: query,
 		},
